@@ -1,0 +1,103 @@
+/*wrapper width is designed for normal page width*/
+
+.wrapper {
+    max-width: 100%;
+    margin: 50 auto;
+    background: #1f3134;
+}
+
+header {
+    background: #00a381;
+    padding: 10px;
+    /*margin: 30px auto;*/
+}
+
+footer {
+    background: #00a381;
+    padding: 10px;
+    /*margin: 30px auto;*/
+}
+
+corp
+{
+    padding: 10px;
+    color:  #d3cbc6;
+    font-size: 10pt;
+    position: center;
+}
+
+
+.container {
+    display: flex;
+    color:  #d3cbc6;
+}
+
+.main {
+    background: #1f3134;
+    font-family: Meiryo;
+    font-size: 15pt;
+    color:  #d3cbc6;
+    width: 90%;
+    padding: 10px;
+    margin: 30px auto;
+    /*text-align: center;*/
+}
+
+
+/*header botton should be fixed in all pages*/
+.normalBtn {
+    position: relative;
+    display: inline-block;
+    font-weight: bold;
+    padding: 0.25em 0.5em;
+    text-decoration: none;
+    color: #d3cbc6;
+    background:#b44c97;
+    transition: .4s;
+}
+
+/*mouce over will change color, for notation*/
+.normalBtn:hover {
+
+    background: #d3cbc6;
+    color:#b44c97;
+}
+
+/*should be simple, section*/
+h1 {
+  color:  #d3cbc6;
+  padding: 0.5em 0;/*上下の余白*/
+  margin: 0.5em auto;
+  font-size: 30pt;
+  font-family: arial;
+  border-top: solid 3px #b44c97;/*上線*/
+  border-bottom: solid 3px #b44c97;/*下線*/
+}
+
+
+ul, ol {
+  border-top: solid #1e366a 1px;/*上のボーダー*/
+  border-bottom: solid #1e366a 1px;/*下のボーダー*/
+  padding: 0.5em 0 0.5em 1.5em;
+  margin: 0.5em auto;
+  font-family: arial;
+}
+
+ul li, ol li {
+  color:  #d3cbc6;
+  font-size: 20pt;
+  font-family: arial;
+  line-height: 1.5;
+  padding: 0.5em 0;
+}
+
+@media (max-width: 600px)
+{
+    .container {
+        flex-direction: column;
+    }
+    .main,
+    .side {
+        width: 100%;
+    }
+}
