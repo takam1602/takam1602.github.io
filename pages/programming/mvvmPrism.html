@@ -1,0 +1,692 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>MVVM + Prism</title><style>
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	text-indent: -1.7em;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, YuMincho, "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Songti TC", "Songti SC", "SimSun", "Nanum Myeongjo", NanumMyeongjo, Batang, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, YuMincho, "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Songti TC", "Songti SC", "SimSun", "Nanum Myeongjo", NanumMyeongjo, Batang, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.highlight-default {
+}
+.highlight-gray {
+	color: rgb(155,154,151);
+}
+.highlight-brown {
+	color: rgb(100,71,58);
+}
+.highlight-orange {
+	color: rgb(217,115,13);
+}
+.highlight-yellow {
+	color: rgb(223,171,1);
+}
+.highlight-teal {
+	color: rgb(15,123,108);
+}
+.highlight-blue {
+	color: rgb(11,110,153);
+}
+.highlight-purple {
+	color: rgb(105,64,165);
+}
+.highlight-pink {
+	color: rgb(173,26,114);
+}
+.highlight-red {
+	color: rgb(224,62,62);
+}
+.highlight-gray_background {
+	background: rgb(235,236,237);
+}
+.highlight-brown_background {
+	background: rgb(233,229,227);
+}
+.highlight-orange_background {
+	background: rgb(250,235,221);
+}
+.highlight-yellow_background {
+	background: rgb(251,243,219);
+}
+.highlight-teal_background {
+	background: rgb(221,237,234);
+}
+.highlight-blue_background {
+	background: rgb(221,235,241);
+}
+.highlight-purple_background {
+	background: rgb(234,228,242);
+}
+.highlight-pink_background {
+	background: rgb(244,223,235);
+}
+.highlight-red_background {
+	background: rgb(251,228,228);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(55, 53, 47, 0.6);
+	fill: rgba(55, 53, 47, 0.6);
+}
+.block-color-brown {
+	color: rgb(100,71,58);
+	fill: rgb(100,71,58);
+}
+.block-color-orange {
+	color: rgb(217,115,13);
+	fill: rgb(217,115,13);
+}
+.block-color-yellow {
+	color: rgb(223,171,1);
+	fill: rgb(223,171,1);
+}
+.block-color-teal {
+	color: rgb(15,123,108);
+	fill: rgb(15,123,108);
+}
+.block-color-blue {
+	color: rgb(11,110,153);
+	fill: rgb(11,110,153);
+}
+.block-color-purple {
+	color: rgb(105,64,165);
+	fill: rgb(105,64,165);
+}
+.block-color-pink {
+	color: rgb(173,26,114);
+	fill: rgb(173,26,114);
+}
+.block-color-red {
+	color: rgb(224,62,62);
+	fill: rgb(224,62,62);
+}
+.block-color-gray_background {
+	background: rgb(235,236,237);
+}
+.block-color-brown_background {
+	background: rgb(233,229,227);
+}
+.block-color-orange_background {
+	background: rgb(250,235,221);
+}
+.block-color-yellow_background {
+	background: rgb(251,243,219);
+}
+.block-color-teal_background {
+	background: rgb(221,237,234);
+}
+.block-color-blue_background {
+	background: rgb(221,235,241);
+}
+.block-color-purple_background {
+	background: rgb(234,228,242);
+}
+.block-color-pink_background {
+	background: rgb(244,223,235);
+}
+.block-color-red_background {
+	background: rgb(251,228,228);
+}
+.select-value-color-default { background-color: rgba(206,205,202,0.5); }
+.select-value-color-gray { background-color: rgba(155,154,151, 0.4); }
+.select-value-color-brown { background-color: rgba(140,46,0,0.2); }
+.select-value-color-orange { background-color: rgba(245,93,0,0.2); }
+.select-value-color-yellow { background-color: rgba(233,168,0,0.2); }
+.select-value-color-green { background-color: rgba(0,135,107,0.2); }
+.select-value-color-blue { background-color: rgba(0,120,223,0.2); }
+.select-value-color-purple { background-color: rgba(103,36,222,0.2); }
+.select-value-color-pink { background-color: rgba(221,0,129,0.2); }
+.select-value-color-red { background-color: rgba(255,0,26,0.2); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="6b3eda88-d322-4aac-8e0d-b532e134c264" class="page sans"><header><h1 class="page-title">MVVM + Prism</h1></header><div class="page-body"><p id="d566e647-8ef7-42c1-b6ae-b6c3503bb13f" class="">GUI作りたいよね、windows デスクトップアプリかっこいいよね、というよりは、MVVMフレームワークを理解して、reactive property したいよね、というモチベーションである。</p><p id="a94cee79-2e67-4cd8-9e37-7ea5662b2c98" class="">なので、メインはプログラムを完成させることよりも、フレームワークを理解することなので、大したものは作らず、深堀りする方向でまとめまとめしてみる。</p><p id="85c05eaf-8d07-4c65-8ce0-6d33aa7cda4f" class="">O先生がたくさんやってるので、その手助けもできるかもしれないし、それ以前にやっている人が近くにいるならば、分からなかったらその人にいろいろ聞けるし、何より話ができるしいいこといっぱい？と思ってやってみる</p><p id="e033dcc1-6215-4d1f-92cc-646ba36c2d13" class="">最初の参考記事↓</p><figure id="166dd3f1-37c8-4ef1-811a-ec6a5879cc85"><a href="https://qiita.com/hiki_neet_p/items/e04b5ac692aa18df0968" class="bookmark source"><div class="bookmark-info"><div class="bookmark-text"><div class="bookmark-title">【改訂版】PrismとReactivePropertyで簡単MVVM！ - Qiita</div><div class="bookmark-description">本記事は、3年前に書いた以下の記事を大幅に見直して書き改めたものです。 PrismとReactivePropertyで簡単MVVM！ 上記の記事は、私の古い認識のもとに書き上げられました。 私の当時の認識で、 Prismの機能のごく一部を使って WPFアプリケーションを構成することが「簡単」だと思っていましたが、時が過ぎ、その認識が変化しました。 即ち、 Prismの機能にもう少し乗っかった方が、結果的に「簡単」だと思い直したのです。 また、当時の未熟さから、誤った考えのもとに書かれた部分も見受けられます。 古い記事に「いいね」をいただく度、そのことをお伝えし直したいという気持ちになっていましたが、この度、執筆するやる気を確保できましたので、本記事を投稿するに至りました。 Prism の機能は多彩ですが、本記事では覚えておくと開発が簡単になる、効果の高い部分のみをピックアップしてお伝えできればなと思います。 今まで、 WPFは.NET Framework固有のものでした。 しかし、2019年秋にリリースされるであろう.NET Core 3.0には、新たに WPFの機能が乗せられており、.NET Frameworkと同じように WPF アプリケーションを作成できるようになります。 世間では、 Javascriptを中心に、新たなGUIフレームワークが台頭しつつありますが、まだ WPF の人口も残っているのではないでしょうか。 本記事の執筆時点では正式リリースがまだですが、以下では.NET Core 3.0-previewを使用し、簡単な WPFのサンプルアプリの作成を通して、 Prismと ReactiveProperty の使用方法をご紹介します。 Windows 10 Home dotnetcore-sdk 3.0.100-preview5-011568 Prism.Unity 7.2.0.1233-pre ReactiveProperty 5.5.1 Visual Studio Code Nugetを見ると、 Prism関連のパッケージがたくさんあります。 ここで、各パッケージの意味を見てみましょう。 Prism.Coreは前提パッケージで、プラットフォーム共通の機能が入っています。 Prism.Wpfと Prism.Formsは、それぞれ WPF用と Xamarin用です。 その下の6つのパッケージは WPF用で、DIコンテナとしてそれぞれの外部パッケージを使用するものです。 最後の3つは Xamarin 用で、DIコンテナとしてそれぞれの外部パッケージを使用します。 WPFアプリを作るうえでは、 WPF用でコンテナありの6つの中から選択することになります。 今回は、.NET Core対応ありで公式サンプルにも使用されている、 Prism.Unity を使用します。 Prism.Unityは Prism.Wpfに依存し、 Prism.Wpfは Prism.Coreに依存するので、 Prism.Unity だけインストールすれば大丈夫です。 UnityはDI（依存性の注入）ライブラリです。 Unityという同名のゲームエンジンが存在しますが、全く関係はありません。 DIライブラリは沢山ありますが、 C#においてはこの Unity が有名どころです。 Prism.Unityは Unityに依存するので、 Prism.Unity だけインストールするようにしましょう。 Prism.Unity を使用した、公式サンプルです。 Prism-Samples-Wpf ...</div></div><div class="bookmark-href"><img src="https://cdn.qiita.com/assets/favicons/public/production-c620d3e403342b1022967ba5e3db1aaa.ico" class="icon bookmark-icon"/>https://qiita.com/hiki_neet_p/items/e04b5ac692aa18df0968</div></div><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F53668%2F29daeb66-c58e-8dd3-3ec9-cecd63a0c9b9.jpeg?ixlib=rb-1.2.2&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=22227488e9245e18886aac3c1f7e5e2f" class="bookmark-image"/></a></figure><p id="3b2a0f42-1473-4f1c-9147-4cd43853dbd0" class="">この通り動作するように環境を構築したりすることはできたけれども、そもそもwpfってなんぞという理解ができてなかったので、もう少し調べてみることにしてみた。</p><figure id="7aa16f98-0c87-4644-92fb-b212b1e25f89"><a href="https://elf-mission.net/programming/wpf/getting-started-2020/step01/" class="bookmark source"><div class="bookmark-info"><div class="bookmark-text"><div class="bookmark-title">はじめての WPF【step: 1 .NET Core WPF 入門 2020】 | :: halation ghost ::</div><div class="bookmark-description">当サイトの WPF 入門記事としては既に WPF Prism episode シリーズ がありますが、 WPF Prism episode シリーズ を書いていた頃は右も左も分からず、試したことをとりあえず記事にしていたような状況だったので 1 つのネタで記事を書いた後に別の情報が見つかる事や、新しい方法を思い付く事も多く、本来 1 エントリに書くべき情報が複数の記事に分散する状況になった連載だと反省しています。 ですが現状では管理人もある程度 WPF や MVVM に慣れ、機能や流れも整理できてきたので新たに 2020 年版の WPF 入門として連載を開始する事にしました。 尚、この記事は Visual Studio 2019 Community Edition で .NET Core 3.1 以上 と C# を使用して、WPF アプリケーションを作成するのが目的のエントリなので、C# の文法や基本的なコーディング知識を持っている人を対象にしています。 WPF は Windows Presentation F oundation の略称で、.NET Framework 3.0（2006/11/6 リリース）以降に含まれる Windows クライアントアプリの実行プラットフォームです。 発表当時はそれなりに騒がれていた記憶はありますが、あっと言う間に名前を聞かなくなり、技術的な情報もあまり増えないまま現在に至っている気がします。その後も Microsoft は UWP を発表しますが WPF 以上に鳴かず飛ばずの状態に思えるので、UWP は既に風前の灯火だと感じています。 .NET における Windows クライアントアプリの開発プラットフォームは Windows Form から始まり WPF → UWP と発表されて来ましたが結局、現時点でも最も使用されているのはおそらく Windows Form だろうと思われる皮肉な状況です。 日本国内では業務系システム開発に従事する人数はおそらく系統別では最多人数を誇ると思っていますが、技術力は低く技術に興味が薄い人が大半を占めると管理人は感じているので、今まで慣れている Windows Form を捨てて右も左も分からない WPF に移行するリスクを冒す選択はしないだろうと思っています。（あくまでも管理人個人の考えです）しかも WPF を選択したとしても得られるのが『コントロールの外観を自由に変更できてかっこいい感じの画面が作れるよ！』だけでは当然の結果のような気はします。 WPF（UWP 含む）が普及しない最大の原因はその学習コストの高さにある と管理人は考えていて、WPF を覚えようとして調べると『XAML』、『データバインディング』、『MVVM』、『Prism』、『Livet』、『ReactiveProperty』、『DI』、『ユニットテスト』...</div></div><div class="bookmark-href"><img src="https://elf-mission.net/wp-content/uploads/2019/01/cropped-favicon_new01-192x192.png" class="icon bookmark-icon"/>https://elf-mission.net/programming/wpf/getting-started-2020/step01/</div></div><img src="https://elf-mission.net/wp-content/uploads/2020/06/eye-catch-started-step-01-05.png" class="bookmark-image"/></a></figure><p id="8e1a4586-004b-4c4f-a84a-b89641ad574a" class="">これがある程度できたら、JavaScriptでGUI作ってみよう。</p><p id="cfe24296-572d-47f9-865c-a33e26a5020f" class="">↓</p><figure id="6007b1fd-78a3-4bcb-abc7-d40db2729c12"><a href="https://elf-mission.net/programming/wpf/getting-started-2020/step07/" class="bookmark source"><div class="bookmark-info"><div class="bookmark-text"><div class="bookmark-title">ReactiveProperty を編む【step: 7 .NET Core WPF MVVM ReactiveProperty 入門 2020】 | :: halation ghost ::</div><div class="bookmark-description">前回記事「Prism に Model ⇔ VM の双方向バインドは難しい【step: 6 .NET Core WPF Prism MVVM 入門 2020】」 前回は Prism だけで Model ⇔ VM 間を疑似的に双方向バインドする方法等を紹介しましたが、結果的に Prism だけで実現するのは難しい事も分かりました。そのため、今回は Prism の MVVM サポートクラス等は使用せず ReactiveProperty を使用してデータを Model ⇔ VM ⇔ View 間をそれぞれ双方向でバインドする方法を紹介します。 尚、この記事は Visual Studio 2019 Community Edition で .NET Core 3.1 以上 と C# + Prism</div></div><div class="bookmark-href"><img src="https://elf-mission.net/wp-content/uploads/2019/01/cropped-favicon_new01-192x192.png" class="icon bookmark-icon"/>https://elf-mission.net/programming/wpf/getting-started-2020/step07/</div></div><img src="https://elf-mission.net/wp-content/uploads/2020/09/started-step-07-eye-catch-02.png" class="bookmark-image"/></a></figure><p id="5d847bdd-85a8-471d-8a77-f56b110b0f41" class="">electron typescript react material - UIでGUI</p><p id="e6d3b296-e599-4e35-b8a4-3eed6477da42" class="">electron typescript vue でGUI</p><figure id="d6580f51-fb3c-40f0-ae6b-aff5be1a67c8"><a href="https://final.hateblo.jp/entry/2020/06/03/141040" class="bookmark source"><div class="bookmark-info"><div class="bookmark-text"><div class="bookmark-title">Electron + Vue.js + TypeScriptでWindowsアプリ開発環境を構築する手順(2020年版) - Code for final</div><div class="bookmark-description">アプリを開発したくなり、前から気になってたElectronで作ってみようと調べてたらVue.jsが使えることがわかり、 アプリの開発環境を構築ようとしたものの、思いのほかつまづいたので対処方法をメモっときます。 たぶん時が流れると状況は変わってくると思うので2020年現在の手順と理解ください。 web(HTML+ CSS)の技術でデスクトップアプリを作成できる フレームワークです。 ちなみにVisual Studo CodeはElectronでできています。 現時点で推奨版となっている12.18をダウンロードしてインストールします。 インストールは次へ次へでOKです。 すでに入っているひとはスキップでOKです。 Vue CLIはVue.jsで開発するのにほぼ必須なツールです。 Visual Studio Code を起動してターミナルを開いて以下のコマンドを実行する。 &gt;npm install -g @vue/cli vue uiはプロジェクトの作成や プラグインのインストール、ビルドなどを GUIで行えるようになる便利なツールです。 Vue CLIに同梱されていますので別途インストールは不要です。 Vue CLI インストールが終わったら以下のコマンドをたたいてvue uiを起動します。 &gt;vue ui ここで以下のエラーがでました。 PS C:\Users\final&gt; vue ui vue : このシステムではスクリプトの実行が無効になっているため、ファイル C:\Users\final\AppData\Roaming\npm\vue.ps1 を読み込むことができま せん。詳細については、「about_Execution_Policies」(https://go.microsoft.com/fwlink/?LinkID=135170) を参照してください。 発生場所 行:1 文字:1 +</div></div><div class="bookmark-href"><img src="https://final.hateblo.jp/icon/favicon" class="icon bookmark-icon"/>https://final.hateblo.jp/entry/2020/06/03/141040</div></div><img src="https://cdn-ak.f.st-hatena.com/images/fotolife/f/finalstream/20200603/20200603134224.png" class="bookmark-image"/></a></figure><figure id="f7d5b008-2ba5-4443-9cd1-450d88b4edf3"><a href="https://qiita.com/koedamon/items/e2f858511863dcc4852e" class="bookmark source"><div class="bookmark-info"><div class="bookmark-text"><div class="bookmark-title">Electron, TypeScript, React, Material-UI で簡単なメモ帳アプリを作る - Qiita</div><div class="bookmark-description">Electron、TypeScript、React、Material-UI の学習メモです。 Wikipediaの記事が端的で分かりやすかったので転載。 Electronは、GitHubが開発したオープンソースのソフトウェアフレームワークである。 Chromiumと Node.js を使っており、HTML、CSS、JavaScriptのようなWeb技術で、macOS、Windows、Linuxに対応したデスクトップアプリケーションをつくることができる。 https://ja.wikipedia.org/wiki/Electron_(%E3%82%BD%E3%83%95%E3%83%88%E3%82%A6%E3%82%A7%E3%82%A2) SPAなどと大体同じ要領で、スタンドアロンでも動作するデスクトップアプリを作れるようになります。 Chromeの開発者ツールも利用できます。 マイクロソフトによって開発されたプログラミング言語です。 JavaScriptを 静的型付け の仕様でラッピングしたようなもので、コンパイル後のソースはバイナリファイルではなく、JavaScriptのテキストファイルです。 TypeScript Facebookによって開発された、JavaScriptのライブラリです。 HTMLと、それを操作するJSのロジックをセットにした「コンポーネント」を組み合わせることで、WEBページを構築します。 Googleが提唱するマテリアルデザインに準拠したUIパーツを、Reactのコンポーネントとして提供しているライブラリです。 自分でCSSを用意せずとも、素敵なWEBページをすぐに構築できます。 Node.js、npmが既に導入済みであることを前提に進めます。 プロジェクトのルートフォルダで、下記コマンドを実行して初期設定ファイルを出力します。 コンパイル後のJSのバージョンは2017にしました。 こちらの記事を参考にいたしました。ありがとうございます。 VSCodeでESLint+@typescript-eslint+Prettierを導入する（v2.0.0修正版） 初期設定ではダブルクォート指定の為、シングルクォートも可に上書きしました。 こちらの記事を参考にいたしました。ありがとうございます。 TypeScriptとElectron WebpackでTypeScriptを扱う為のLoaderもインストールします。 TypeScriptのコンパイル設定を strictに設定している為、nodeのモジュールを requireでインポートする際に、暗黙のanyに対してエラーが発生します。 今回は、コメントでエラーをスキップしてみました。 targetは、webpackに環境を伝えるプロパティです。 Targets | webpack mainには、エントリーポイントとなるコンパイル後のファイルを指定します。 開発時はwebpackはウォッチモードで。 TypeScript用の定義ファイルも一緒に取得します。 Material-UIのアイコンも取得しています。 ReactコードのコンパイルはTS側で行うため、Webpackのloaderや設定は不要です。 .eslintrc.jsonに設定を追記します。 Propsの型チェックはTypeScriptで行うので、 react/prop-typesは off にします。 拡張機能の ESLintを追加します。 setting.json にて、入力時にチェックし、保存時にフォーマット修正をするようにします。 まだまだ理解がふんわりしているのですが、とりあえず環境構築できました。 疲れた。息切れ。 create-react-app を利用すると、もっと手順が減ります。 プロジェクトフォルダ内に、下記のファイルとフォルダを準備します。 後で使うMaterial-UIで利用するフォントのリンクもついでに入れておきます。 React×TypeScriptのサンプルコードで、関数コンポーネントのインターフェースとして React.SFCを利用しているものを見かけますが、廃止予定のようですね。 React 16.7 - React.SFC is now deprecated | stackoverflow webPreferences: { nodeIntegration: true }は、セキュリティ上好ましくない設定だそうですが、一旦これで進めます。 リモートコンテンツで、Node.js integration を有効にしない | electron 【Electron】nodeIntegration: ...</div></div><div class="bookmark-href"><img src="https://cdn.qiita.com/assets/favicons/public/production-c620d3e403342b1022967ba5e3db1aaa.ico" class="icon bookmark-icon"/>https://qiita.com/koedamon/items/e2f858511863dcc4852e</div></div><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fcdn.qiita.com%2Fassets%2Fpublic%2Farticle-ogp-background-1150d8b18a7c15795b701a55ae908f94.png?ixlib=rb-1.2.2&amp;w=1200&amp;mark=https%3A%2F%2Fqiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-1.2.2%26w%3D840%26h%3D380%26txt%3DElectron%252C%2520TypeScript%252C%2520React%252C%2520Material-UI%2520%25E3%2581%25A7%25E7%25B0%25A1%25E5%258D%2598%25E3%2581%25AA%25E3%2583%25A1%25E3%2583%25A2%25E5%25B8%25B3%25E3%2582%25A2%25E3%2583%2597%25E3%2583%25AA%25E3%2582%2592%25E4%25BD%259C%25E3%2582%258B%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D54%26txt-clip%3Dellipsis%26txt-align%3Dcenter%252Cmiddle%26s%3De676f601a48ef393762697aec08f06b4&amp;mark-align=center%2Cmiddle&amp;blend=https%3A%2F%2Fqiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-1.2.2%26w%3D840%26h%3D500%26txt%3D%2540koedamon%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D45%26txt-align%3Dright%252Cbottom%26s%3Daccbd447135c44b348275784009b2b0e&amp;blend-align=center%2Cmiddle&amp;blend-mode=normal&amp;s=60d1aa37555d33c836e74ce8c24e849f" class="bookmark-image"/></a></figure><h1 id="878ca8c7-eca3-4f58-8f7c-c65ea5955968" class="">WPF is 何</h1><p id="1c10792b-c763-42ed-8692-131ba3b68615" class="">Windows Presentation Foundation</p><figure id="11198f47-2ef6-47d7-a02c-029f1ee437ab"><a href="https://docs.microsoft.com/en-us/visualstudio/designers/getting-started-with-wpf?view=vs-2019" class="bookmark source"><div class="bookmark-info"><div class="bookmark-text"><div class="bookmark-title">What is WPF? - Visual Studio</div><div class="bookmark-description">Windows Presentation Foundation (WPF) is a UI framework that creates desktop client applications. The WPF development platform supports a broad set of application development features, including an application model, resources, controls, graphics, layout, data binding, documents, and security.</div></div><div class="bookmark-href"><img src="https://docs.microsoft.com/favicon.ico" class="icon bookmark-icon"/>https://docs.microsoft.com/en-us/visualstudio/designers/getting-started-with-wpf?view=vs-2019</div></div><img src="https://docs.microsoft.com/en-us/media/logos/logo-ms-social.png" class="bookmark-image"/></a></figure><h1 id="9aaa9623-7497-47d5-95d4-6a49331b0e43" class="">きーわーど</h1><ul id="c7a7104a-6dad-4025-802b-faef776b013c" class="bulleted-list"><li>XAML </li></ul><ul id="5e527f96-7d4a-46f6-bf91-62a1eb3b7310" class="bulleted-list"><li>データバインディング</li></ul><ul id="9db8f462-7926-408d-b2c9-5377a67c6c78" class="bulleted-list"><li>MVVM</li></ul><ul id="b689ee90-56d5-4465-8ae9-67cad4cfa558" class="bulleted-list"><li>Prism</li></ul><ul id="7faaf64d-bdaa-4394-95f8-4691d258a8e5" class="bulleted-list"><li>Livet</li></ul><ul id="aa2ec2bd-b092-4a70-976f-f59f7115f99b" class="bulleted-list"><li>ReactiveProperty</li></ul><ul id="aef21e1a-f460-4f09-be02-852a37aa5813" class="bulleted-list"><li>DI</li></ul><ul id="70e1c225-3c34-4648-8a67-213d996a31e1" class="bulleted-list"><li>ユニットテスト</li></ul><p id="fa9ded97-b970-4f09-8e60-e1aecf1d45ed" class="">
+</p><h1 id="0d7d6579-7c95-4c0a-808e-209d8414b8f5" class="">Target Frameworkについて</h1><p id="cab28d7b-e389-417f-8763-26dec071fa7c" class="">WPFアプリをvisual studio で作成する場合、Target Frameworkとしていろいろ選べる。</p><p id="0303eddd-f6f3-4257-92fb-a97a04a34a06" class="">大まかに分けて、</p><ul id="40aec247-b33a-40a7-9f13-a3ce9c8ce2fe" class="bulleted-list"><li>.NET Framework</li></ul><ul id="42eb390d-ca7c-4c0a-99a1-a392931bcf46" class="bulleted-list"><li>.NET Core</li></ul><ul id="6302c991-e106-4f46-86d5-13d8f90252dc" class="bulleted-list"><li>.NET5</li></ul><p id="800d6c2e-8448-4f0d-8f75-41bc44e4aabc" class="">がある。</p><figure id="3e113cb8-a1dd-464a-9ac6-33db7e17e604"><a href="https://light11.hatenadiary.com/entry/2020/05/24/200141" class="bookmark source"><div class="bookmark-info"><div class="bookmark-text"><div class="bookmark-title">【2020年版】.NET Framework / .Net Core / Xamarinの関係を整理～そして.NET 5へ - LIGHT11</div><div class="bookmark-description">NET関連の フレームワークは概念も歴史も複雑でよくわからなくなりがちです。 .NET 5という大きい転換点が訪れるこのタイミングで、現時点で.NETの理解に必要な知識をざっとまとめてみました。 .NETをめぐる物語は2000年に マイクロソフトが Microsoft .NETという戦略を発表するところから始まります。 そしてその後に、この構想が実装されたものとして、.NET Frameworkが誕生します。 .NET Frameworkを使うと Windows アプリケーションやWebアプリケーションを作ることができます。 さてこの.NET Frameworkの特徴として、いろんな言語で記述が行えるということがあります。 例えば今、同じ処理を C#で書いた ソースコードと Visual Basic .NETで書いた ソースコード があることを考えます。 .NET Frameworkでは、これらを一度 共通中間言語（Common Intermediate Language / CIL）と呼ばれるものに変換します。 このCILは、 C#から コンパイルしても VB.NETから コンパイルしても同じものが出来上がります。 つまりこの時点で言語間の差異が吸収されます。 ただしCILはまだ機械が読める状態ではないのでここからさらにネイティブコードへの変換をかける必要があります。 このときに使われるのが 共通言語ランタイム（Common Language Runtime / CLR）と呼ばれる 仮想マシンです。 これがCILを読んで処理を行うことにより最終的に ソースコード が実行されます。 前節の.NET Frameworkは</div></div><div class="bookmark-href"><img src="https://light11.hatenadiary.com/icon/favicon" class="icon bookmark-icon"/>https://light11.hatenadiary.com/entry/2020/05/24/200141</div></div><img src="https://cdn.image.st-hatena.com/image/square/6733676bf6e121a87d7e653f3778365e516a3bda/backend=imagemagick;height=100;version=1;width=100/https%3A%2F%2Fcdn-ak.f.st-hatena.com%2Fimages%2Ffotolife%2Fh%2Fhalya_11%2F20201022%2F20201022113645.png" class="bookmark-image"/></a></figure><p id="90942856-32fd-42f6-ac81-c7e23c011f76" class="">やはり混沌としているようで、ざっくりまとめると、</p><ol id="b0cb918c-82a4-4dc5-869d-d1b05b1429a4" class="numbered-list" start="1"><li>2000年にマイクソフトが打ち出したMicrosoft .NETという戦略・構想の実装として、.NET Frameworkが誕生した。このフレームワークを使用することによってMicrosoft Windowsで動作可能な様々なアプリケーションを作成することができた。</li></ol><ol id="19d73882-e980-4f59-a36b-6bb36f77329b" class="numbered-list" start="2"><li>他のプラットフォームでも動作可能なアプリケーションを作成するために、新しいフレームワークである .NET Coreを発表。MITライセンス。でも .NET Frameworkで準拠していた .NETの仕様を満たしている。</li></ol><ol id="53f74752-ca40-4f86-996c-895e2f3a500c" class="numbered-list" start="3"><li>.NET Coreと同じように、マルチプラットフォームなフレームワークとしてXamarin社のMonoというフレームワークも存在していた。</li></ol><ol id="c064390c-6b33-486d-baee-1fa097c4aab3" class="numbered-list" start="4"><li>この時点で3つ存在していることになる。（カオス）</li></ol><ol id="805a3838-3de8-42e7-bf50-104896a1a91c" class="numbered-list" start="5"><li>そのため、これら3つのフレームワークを統一して1つのフレームワークとしてみた結果が .NET 5である。</li></ol><p id="19fcbdfc-298b-45f0-a8ba-df520fdc145a" class="">今(2021年3月現在)はとりあえずおとなしく .NET5を使用する。</p><h1 id="3bf96cc1-9e28-46f2-9201-336cd369c836" class="">XAML ざむる</h1><p id="9c6782f6-b8df-43b7-be23-dd328235e540" class="">eXtensible Application Markup Language</p><p id="4e02eb32-229f-4ed2-8387-99c7bfe1f80a" class="">Microsoftが開発したXMLの仕様に準拠したGUI記述用のマークアップ言語。</p><blockquote id="7b3e2602-976c-4a1e-a0e7-01f6f4311d26" class="">マークアップ言語とは、文章を構造化するための言語です。「文章を構造化する」というと、なんだか非常に難しそうな印象を受けますが、基本的には「ここはタイトル部分です」「ここから本文が始まります」「ここは非常に重要な部分です」など、人間であれば直感的に理解できる事柄を、タグや記号で表示し、コンピューターに認識させることを指します。</blockquote><figure id="1b44a052-fe22-4b9f-b2ca-c634cbe98088"><a href="https://mynavi-creator.jp/blog/article/what-is-mark-up-language" class="bookmark source"><div class="bookmark-info"><div class="bookmark-text"><div class="bookmark-title">マークアップ言語とは - Markup Languageの種類とその歴史 | マイナビクリエイター</div><div class="bookmark-description">マークアップ言語とは、文章を構造化するための言語です。「文章を構造化する」というと、なんだか非常に難しそうな印象を受けますが、基本的には「ここはタイトル部分です」「ここから本文が始まります」「ここは非常に重要な部分です」など、人間であれば直感的に理解できる事柄を、タグや記号で表示し、コンピューターに認識させることを指します。 ...</div></div><div class="bookmark-href"><img src="https://mynavi-creator.jp/favicon.ico" class="icon bookmark-icon"/>https://mynavi-creator.jp/blog/article/what-is-mark-up-language</div></div><img src="https://mynavi-creator.jp/blog/images/img-og-what-is-mark-up-language_01.jpg" class="bookmark-image"/></a></figure><p id="5e2a1228-2182-43b8-94fc-43b8e8b30b7c" class="">
+</p><p id="33ef4d89-944a-4649-9dae-a7f6358bcbb0" class="">これで何をするのかというと、GUIの中身を構成するために使用する。</p><p id="c715e358-4235-431b-b2bd-d01ca65926c9" class="">XAMLが登場する前は、どのように記述していたかというと、C# やVBAなどの言語を使用していた。</p><p id="d8c679f8-ac24-4622-a983-1b8cb4a1a698" class="">昔適当に作ったやつを除いてみると、</p><div id="098f0da3-ba6e-442b-af49-a26777e2d6d3" class="collection-content"><h4 class="collection-title">WindowsFormsApp</h4><table class="collection-content"><thead><tr><th><span class="icon property-icon"><svg viewBox="0 0 14 14" style="width:14px;height:14px;display:block;fill:rgba(55, 53, 47, 0.4);flex-shrink:0;-webkit-backface-visibility:hidden" class="typesTitle"><path d="M7.73943662,8.6971831 C7.77640845,8.7834507 7.81338028,8.8943662 7.81338028,9.00528169 C7.81338028,9.49823944 7.40669014,9.89260563 6.91373239,9.89260563 C6.53169014,9.89260563 6.19894366,9.64612676 6.08802817,9.30105634 L5.75528169,8.33978873 L2.05809859,8.33978873 L1.72535211,9.30105634 C1.61443662,9.64612676 1.2693662,9.89260563 0.887323944,9.89260563 C0.394366197,9.89260563 0,9.49823944 0,9.00528169 C0,8.8943662 0.0246478873,8.7834507 0.0616197183,8.6971831 L2.46478873,2.48591549 C2.68661972,1.90669014 3.24119718,1.5 3.90669014,1.5 C4.55985915,1.5 5.12676056,1.90669014 5.34859155,2.48591549 L7.73943662,8.6971831 Z M2.60035211,6.82394366 L5.21302817,6.82394366 L3.90669014,3.10211268 L2.60035211,6.82394366 Z M11.3996479,3.70598592 C12.7552817,3.70598592 14,4.24823944 14,5.96126761 L14,9.07922535 C14,9.52288732 13.6549296,9.89260563 13.2112676,9.89260563 C12.8169014,9.89260563 12.471831,9.59683099 12.4225352,9.19014085 C12.028169,9.6584507 11.3257042,9.95422535 10.5492958,9.95422535 C9.60035211,9.95422535 8.47887324,9.31338028 8.47887324,7.98239437 C8.47887324,6.58978873 9.60035211,6.08450704 10.5492958,6.08450704 C11.3380282,6.08450704 12.040493,6.33098592 12.4348592,6.81161972 L12.4348592,5.98591549 C12.4348592,5.38204225 11.9172535,4.98767606 11.1285211,4.98767606 C10.6602113,4.98767606 10.2411972,5.11091549 9.80985915,5.38204225 C9.72359155,5.43133803 9.61267606,5.46830986 9.50176056,5.46830986 C9.18133803,5.46830986 8.91021127,5.1971831 8.91021127,4.86443662 C8.91021127,4.64260563 9.0334507,4.44542254 9.19366197,4.34683099 C9.87147887,3.90316901 10.6232394,3.70598592 11.3996479,3.70598592 Z M11.1778169,8.8943662 C11.6830986,8.8943662 12.1760563,8.72183099 12.4348592,8.37676056 L12.4348592,7.63732394 C12.1760563,7.29225352 11.6830986,7.11971831 11.1778169,7.11971831 C10.5616197,7.11971831 10.056338,7.45246479 10.056338,8.0193662 C10.056338,8.57394366 10.5616197,8.8943662 11.1778169,8.8943662 Z M0.65625,11.125 L13.34375,11.125 C13.7061869,11.125 14,11.4188131 14,11.78125 C14,12.1436869 13.7061869,12.4375 13.34375,12.4375 L0.65625,12.4375 C0.293813133,12.4375 4.43857149e-17,12.1436869 0,11.78125 C-4.43857149e-17,11.4188131 0.293813133,11.125 0.65625,11.125 Z"></path></svg></span>Name</th><th><span class="icon property-icon"><svg viewBox="0 0 14 14" style="width:14px;height:14px;display:block;fill:rgba(55, 53, 47, 0.4);flex-shrink:0;-webkit-backface-visibility:hidden" class="typesCreatedAt"><path d="M6.98643729,14.0000972 C5.19579566,14.0000972 3.40419152,13.3106896 2.04245843,11.9323606 C-0.681017475,9.21200555 -0.680780251,4.76029539 2.04293482,2.04012507 C4.76664406,-0.68004331 9.22427509,-0.68004331 11.9480135,2.04013479 C13.272481,3.36277455 14,5.1330091 14,6.99552762 C14,8.87640182 13.2721894,10.6285043 11.9480135,11.9509302 C10.5679344,13.3105924 8.77756503,14.0000972 6.98643729,14.0000972 Z M10.2705296,7.00913883 L10.2705296,8.46099754 L10.2705296,8.65543362 L10.076181,8.65543362 L8.6543739,8.65543362 L5.72059514,8.65543362 L5.52619796,8.65543362 L5.52619796,8.46099754 L5.52619796,5.52541044 L5.52619796,3.37946773 L5.52619796,3.18502193 L5.72059514,3.18502193 L7.17253164,3.18502193 L7.36692883,3.18502193 L7.36692883,3.37946773 L7.36692883,6.81467358 L10.076181,6.81467358 L10.2705296,6.81467358 L10.2705296,7.00913883 Z M12.1601539,6.99552762 C12.1601539,5.61697497 11.6190112,4.32597154 10.6393933,3.34769528 C8.63253764,1.34336744 5.35197452,1.34061603 3.34153136,3.33944106 C3.33868273,3.34219247 3.33607716,3.34494388 3.33322852,3.34769528 C1.32397148,5.35459953 1.32372842,8.63641682 3.33322852,10.6433794 C5.34295224,12.6504489 8.62968901,12.6504489 10.6393933,10.6433794 C11.6190112,9.66506426 12.1601539,8.37408027 12.1601539,6.99552762 Z"></path></svg></span>Created</th><th><span class="icon property-icon"><svg viewBox="0 0 14 14" style="width:14px;height:14px;display:block;fill:rgba(55, 53, 47, 0.4);flex-shrink:0;-webkit-backface-visibility:hidden" class="typesMultipleSelect"><path d="M4,3 C4,2.447715 4.447715,2 5,2 L12,2 C12.5523,2 13,2.447716 13,3 C13,3.55228 12.5523,4 12,4 L5,4 C4.447715,4 4,3.55228 4,3 Z M4,7 C4,6.447715 4.447715,6 5,6 L12,6 C12.5523,6 13,6.447716 13,7 C13,7.55228 12.5523,8 12,8 L5,8 C4.447715,8 4,7.55228 4,7 Z M4,11 C4,10.447715 4.447715,10 5,10 L12,10 C12.5523,10 13,10.447716 13,11 C13,11.55228 12.5523,12 12,12 L5,12 C4.447715,12 4,11.55228 4,11 Z M2,4 C1.44771525,4 1,3.55228475 1,3 C1,2.44771525 1.44771525,2 2,2 C2.55228475,2 3,2.44771525 3,3 C3,3.55228475 2.55228475,4 2,4 Z M2,8 C1.44771525,8 1,7.55228475 1,7 C1,6.44771525 1.44771525,6 2,6 C2.55228475,6 3,6.44771525 3,7 C3,7.55228475 2.55228475,8 2,8 Z M2,12 C1.44771525,12 1,11.5522847 1,11 C1,10.4477153 1.44771525,10 2,10 C2.55228475,10 3,10.4477153 3,11 C3,11.5522847 2.55228475,12 2,12 Z"></path></svg></span>Tags</th></tr></thead><tbody><tr id="57dfe958-1b4e-4e4d-93f0-49a7eff60da5"><td class="cell-title"><a href="https://www.notion.so/Properties-57dfe9581b4e4e4d93f049a7eff60da5">Properties</a></td><td class="cell-_hg\"><time>@Mar 16, 2021 8:54 PM</time></td><td class="cell-^jCO"></td></tr><tr id="5230f11a-98f8-4037-aba8-842e0cecf680"><td class="cell-title"><a href="https://www.notion.so/References-5230f11a98f84037aba8842e0cecf680">References</a></td><td class="cell-_hg\"><time>@Mar 16, 2021 8:54 PM</time></td><td class="cell-^jCO"></td></tr><tr id="e1416c1b-1f56-4cd4-8624-262e83efdada"><td class="cell-title"><a href="https://www.notion.so/App-Config-e1416c1b1f564cd48624262e83efdada">App.Config</a></td><td class="cell-_hg\"><time>@Mar 16, 2021 8:54 PM</time></td><td class="cell-^jCO"></td></tr><tr id="92deeb1a-60af-49dc-af9b-575456947837"><td class="cell-title"><a href="https://www.notion.so/Form1-cs-92deeb1a60af49dcaf9b575456947837">Form1.cs</a></td><td class="cell-_hg\"><time>@Mar 16, 2021 8:55 PM</time></td><td class="cell-^jCO"></td></tr><tr id="c561ad0e-6c89-449a-a901-fe1f59fd5962"><td class="cell-title"><a href="https://www.notion.so/main-cs-c561ad0e6c89449aa901fe1f59fd5962">main.cs</a></td><td class="cell-_hg\"><time>@Mar 16, 2021 8:57 PM</time></td><td class="cell-^jCO"></td></tr><tr id="528534be-1bbe-431a-a491-7ebcc6c64cc6"><td class="cell-title"><a href="https://www.notion.so/hogehoge-cs-528534be1bbe431aa4917ebcc6c64cc6">hogehoge.cs</a></td><td class="cell-_hg\"><time>@Mar 16, 2021 8:58 PM</time></td><td class="cell-^jCO"></td></tr></tbody></table></div><p id="efe17482-4c61-4a04-8a8a-781319311f9c" class="">
+</p><p id="5d25c835-6e35-43fc-bf0c-f9a04730b6cb" class="">という感じの構成になっていた。</p><p id="4fccbd6b-3543-493e-a574-a4ba008de450" class="">これはwindows form appの場合でmain.csでInitializeComponent()メソッドの中でめちゃくちゃたくさんクラスを作成してテキストボックスとかボタンとかを指定している。</p><p id="f1933a79-29cb-4a58-a332-89d8b6e81846" class="">C#の言語仕様に則ってGUIのボタン配置などを指定していた。</p><p id="35b24c35-0763-48e8-a698-82e28f76e796" class="">正直構造わかりにくいし、もっと簡単に書きたい。</p><p id="e6e44c39-36ef-4b68-96f2-42acdd615cc7" class="">
+</p><p id="75abfc8d-0187-4e4b-a93d-79b6f8d8751d" class="">統一的かつ簡素なGUIの記述方法は何だろうかと考えると、HTMLのようなマークアップ言語でそれぞれのGUI上の機能を記述する方法である。</p><p id="6660df81-bb72-470e-abca-cd90132b1e38" class="">なんでHTMLにしなかったのか分からないけれども、結果、MicrosoftはXMLの仕様に則った、XAMLというものを生み出したのだと思う。</p><p id="24be63a7-89bc-484c-8222-247749b9254e" class="">実際のXAMLの例</p><p id="0d0df365-3362-42a4-806f-aa2fe9424843" class="">↓</p><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism.min.css')</style><pre id="3b3200f4-07de-47c9-ba93-bfb0c118bd34" class="code"><code><span class="token operator">&lt;</span><span class="token class-name">Window</span> x<span class="token punctuation">:</span>Class<span class="token operator">=</span><span class="token string">"PrismSample.Lib.Views.MainWindow"</span>
+        xmlns<span class="token operator">=</span><span class="token string">"http://schemas.microsoft.com/winfx/2006/xaml/presentation"</span>
+        xmlns<span class="token punctuation">:</span>x<span class="token operator">=</span><span class="token string">"http://schemas.microsoft.com/winfx/2006/xaml"</span>
+        xmlns<span class="token punctuation">:</span>d<span class="token operator">=</span><span class="token string">"http://schemas.microsoft.com/expression/blend/2008"</span>
+        xmlns<span class="token punctuation">:</span>mc<span class="token operator">=</span><span class="token string">"http://schemas.openxmlformats.org/markup-compatibility/2006"</span>
+        xmlns<span class="token punctuation">:</span>prism<span class="token operator">=</span><span class="token string">"http://prismlibrary.com/"</span>
+        xmlns<span class="token punctuation">:</span>local<span class="token operator">=</span><span class="token string">"clr-namespace:PrismSample.Lib.Views"</span>
+        mc<span class="token punctuation">:</span>Ignorable<span class="token operator">=</span><span class="token string">"d"</span>
+        prism<span class="token punctuation">:</span>ViewModelLocator<span class="token punctuation">.</span>AutoWireViewModel<span class="token operator">=</span><span class="token string">"True"</span>
+        Title<span class="token operator">=</span><span class="token string">"MainWindow"</span> Width<span class="token operator">=</span><span class="token string">"800"</span> Height<span class="token operator">=</span><span class="token string">"450"</span> FontSize<span class="token operator">=</span><span class="token string">"40"</span>
+        Loaded<span class="token operator">=</span><span class="token string">"OnLoaded"</span><span class="token operator">></span>
+    <span class="token operator">&lt;</span>Grid<span class="token operator">></span>
+        <span class="token operator">&lt;</span>Grid<span class="token punctuation">.</span>ColumnDefinitions<span class="token operator">></span>
+            <span class="token operator">&lt;</span>ColumnDefinition<span class="token operator">/</span><span class="token operator">></span>
+            <span class="token operator">&lt;</span>ColumnDefinition<span class="token operator">/</span><span class="token operator">></span>
+        <span class="token operator">&lt;</span><span class="token operator">/</span>Grid<span class="token punctuation">.</span>ColumnDefinitions<span class="token operator">></span>
+        <span class="token operator">&lt;</span>ContentControl Grid<span class="token punctuation">.</span>Column<span class="token operator">=</span><span class="token string">"0"</span> Margin<span class="token operator">=</span><span class="token string">"20"</span>
+            prism<span class="token punctuation">:</span>RegionManager<span class="token punctuation">.</span>RegionName<span class="token operator">=</span><span class="token string">"OperandRegion"</span><span class="token operator">/</span><span class="token operator">></span>
+        <span class="token operator">&lt;</span>ContentControl Grid<span class="token punctuation">.</span>Column<span class="token operator">=</span><span class="token string">"1"</span> Margin<span class="token operator">=</span><span class="token string">"20"</span>
+            prism<span class="token punctuation">:</span>RegionManager<span class="token punctuation">.</span>RegionName<span class="token operator">=</span><span class="token string">"AnswerRegion"</span><span class="token operator">/</span><span class="token operator">></span>
+				<span class="token operator">&lt;</span>Button<span class="token operator">></span>
+			  <span class="token operator">&lt;</span>Button<span class="token punctuation">.</span>FontWeight<span class="token operator">></span>Bold<span class="token operator">&lt;</span><span class="token operator">/</span>Button<span class="token punctuation">.</span>FontWeight<span class="token operator">></span>
+				  <span class="token operator">&lt;</span>Button<span class="token punctuation">.</span>Content<span class="token operator">></span>
+		       <span class="token operator">&lt;</span>WrapPanel<span class="token operator">></span>
+			       <span class="token operator">&lt;</span><span class="token class-name">TextBlock</span> Foreground<span class="token operator">=</span><span class="token string">"Blue"</span><span class="token operator">></span>Multi<span class="token operator">&lt;</span><span class="token operator">/</span>TextBlock<span class="token operator">></span>
+		         <span class="token operator">&lt;</span><span class="token class-name">TextBlock</span> Foreground<span class="token operator">=</span><span class="token string">"Red"</span><span class="token operator">></span>Color<span class="token operator">&lt;</span><span class="token operator">/</span>TextBlock<span class="token operator">></span>
+		         <span class="token operator">&lt;</span>TextBlock<span class="token operator">></span>Button<span class="token operator">&lt;</span><span class="token operator">/</span>TextBlock<span class="token operator">></span>
+			      <span class="token operator">&lt;</span><span class="token operator">/</span>WrapPanel<span class="token operator">></span>
+				   <span class="token operator">&lt;</span><span class="token operator">/</span>Button<span class="token punctuation">.</span>Content<span class="token operator">></span>
+				<span class="token operator">&lt;</span><span class="token operator">/</span>Button<span class="token operator">></span>
+    <span class="token operator">&lt;</span><span class="token operator">/</span>Grid<span class="token operator">></span>
+<span class="token operator">&lt;</span><span class="token operator">/</span>Window<span class="token operator">></span></code></pre><p id="31d7b2bf-702b-48cc-8ae3-f1e02abbbcb3" class="">xmlnsはXAML NameSpaceであり、XAMLを機能させるために必要な機能などを格納しているライブラリ、名前空間を参照している。</p><p id="b75b8016-6c62-44b1-b061-fe5aff9be4ad" class="">名前空間を参照しておくことによってその名前空間内に存在するクラスを利用することが可能になる。</p><ul id="1d5d9809-349e-408a-85e2-1dd66849bf99" class="bulleted-list"><li>参照する名前空間を指定しないとその先のクラスを使用することができない。</li></ul><ul id="9999c457-a232-44dc-927b-43a246d287b6" class="bulleted-list"><li>サイズやコントロールなどもここですべて記述することもできるし、分割して記述することも可能である。（上の例は分割版）</li></ul><p id="ce5c7642-3de0-46fe-8af3-d9bcd983f582" class="">という感じで、C#やVBAなどでGUIの実装を書くのではなくて、実装の記述はXAMLというマークアップ言語に切り分けて書いてあげよう、というのがXAMLを用意した理由。</p><h1 id="95bf89e5-3b68-423c-87f0-8883ed082ebe" class="">コンテンツモデル</h1><p id="2176027a-e9ad-4a0f-b4ad-1bf055be73b3" class="">大切な考え方らしい。</p><figure id="5ec1823c-cbe0-4292-a543-6c4abe4ffe1d"><a href="https://blog.okazuki.jp/entry/2014/08/25/164331" class="bookmark source"><div class="bookmark-info"><div class="bookmark-text"><div class="bookmark-title">WPF4.5入門 その47 「コンテンツモデル」 - かずきのBlog@hatena</div><div class="bookmark-description">WPFの重要なコントロールの1つにContentControlクラスがあります。このクラスは、Contentプロパティに設定された単一の要素を表示するという機能を提供するコントロールです。「WPFのコンセプト」でも紹介しましたが、このコントロールが、要素を表示する際の詳細なロジックを以下に示します。 ...</div></div><div class="bookmark-href"><img src="https://blog.okazuki.jp/icon/favicon" class="icon bookmark-icon"/>https://blog.okazuki.jp/entry/2014/08/25/164331</div></div><img src="http://cdn-ak.f.st-hatena.com/images/fotolife/o/okazuki/20140825/20140825164016.png" class="bookmark-image"/></a></figure><p id="69d19b13-6c3f-4f87-9202-2bc8a3273cab" class="">かずきさんのブログによれば、</p><blockquote id="65902877-cc51-4a86-979b-1d11b572d617" class="">WPFの重要なコントロールの1つにContentControlクラスがあります。このクラスは、Contentプロパティに設定された単一の要素を表示するという機能を提供するコントロールです。</blockquote><figure id="78e4b5ba-e7d2-4138-8446-3c757448b64b"><a href="https://blog.okazuki.jp/entry/20110224/1298560658" class="bookmark source"><div class="bookmark-info"><div class="bookmark-text"><div class="bookmark-title">Windows FormsからWPFへ乗り換えるときの最初の障壁 - かずきのBlog@hatena</div><div class="bookmark-description">Twitterでも呟いたのですが、とりあえずブログのエントリとしてまとめておきます。因みに、ここでの障壁はプログラマさんが感じるであろう最初の障壁を自分の場合を思い出して書いています。 何がなんだかわからない まず、最初に躓くのが慣れ親しんだWindows ...</div></div><div class="bookmark-href"><img src="https://blog.okazuki.jp/icon/favicon" class="icon bookmark-icon"/>https://blog.okazuki.jp/entry/20110224/1298560658</div></div><img src="https://ogimage.blog.st-hatena.com/12704346814673850048/11696248318755463580/1373165627" class="bookmark-image"/></a></figure><p id="4a79cf44-ae7e-404d-a278-f2859672817d" class="">こっちのがわかりやすく書いている。</p><blockquote id="78f4c9c8-3012-48b6-9580-7dbbd0725998" class="">WPFは、コンテンツモデルという初見の人にとってはよくわからないものが採用されています。何か表示するものを１つだけ持つものはContentというプロパティで、それを指定します。このContentはobject型なのでなんでも入ったりするという、Windows Formsから見たら考えられない状態になっていますが、とりあえず文字列を入れれば大丈夫です。</blockquote><p id="128d0e86-b7e3-41a7-b45a-213f62c95224" class="">つまいどういうことかというと、XAMLで書かれているタグはそれぞれクラス、を表しており、そのクラスのプロパティの中にContentが含まれているか否かで、表示できる個数が制限されている、と解釈することができる。</p><p id="849628b1-d3fa-45fc-bc0f-b808d86fe7c4" class="">例えば以下のコード</p><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism.min.css')</style><pre id="980c579b-7d19-4c85-8545-13f93e8381dc" class="code"><code><span class="token operator">&lt;</span><span class="token class-name">Window</span> x<span class="token punctuation">:</span>Class<span class="token operator">=</span><span class="token string">"PrismSample.Lib.Views.MainWindow"</span>
+        xmlns<span class="token operator">=</span><span class="token string">"http://schemas.microsoft.com/winfx/2006/xaml/presentation"</span>
+        xmlns<span class="token punctuation">:</span>x<span class="token operator">=</span><span class="token string">"http://schemas.microsoft.com/winfx/2006/xaml"</span>
+        xmlns<span class="token punctuation">:</span>d<span class="token operator">=</span><span class="token string">"http://schemas.microsoft.com/expression/blend/2008"</span>
+        xmlns<span class="token punctuation">:</span>mc<span class="token operator">=</span><span class="token string">"http://schemas.openxmlformats.org/markup-compatibility/2006"</span>
+        xmlns<span class="token punctuation">:</span>prism<span class="token operator">=</span><span class="token string">"http://prismlibrary.com/"</span>
+        xmlns<span class="token punctuation">:</span>local<span class="token operator">=</span><span class="token string">"clr-namespace:PrismSample.Lib.Views"</span>
+        mc<span class="token punctuation">:</span>Ignorable<span class="token operator">=</span><span class="token string">"d"</span>
+        prism<span class="token punctuation">:</span>ViewModelLocator<span class="token punctuation">.</span>AutoWireViewModel<span class="token operator">=</span><span class="token string">"True"</span>
+        Title<span class="token operator">=</span><span class="token string">"MainWindow"</span> Width<span class="token operator">=</span><span class="token string">"800"</span> Height<span class="token operator">=</span><span class="token string">"450"</span> FontSize<span class="token operator">=</span><span class="token string">"40"</span>
+        Loaded<span class="token operator">=</span><span class="token string">"OnLoaded"</span><span class="token operator">></span>
+    <span class="token operator">&lt;</span>Grid<span class="token operator">></span>
+        <span class="token operator">&lt;</span>Grid<span class="token punctuation">.</span>ColumnDefinitions<span class="token operator">></span>
+            <span class="token operator">&lt;</span>ColumnDefinition<span class="token operator">/</span><span class="token operator">></span>
+            <span class="token operator">&lt;</span>ColumnDefinition<span class="token operator">/</span><span class="token operator">></span>
+        <span class="token operator">&lt;</span><span class="token operator">/</span>Grid<span class="token punctuation">.</span>ColumnDefinitions<span class="token operator">></span>
+        <span class="token operator">&lt;</span>ContentControl Grid<span class="token punctuation">.</span>Column<span class="token operator">=</span><span class="token string">"0"</span> Margin<span class="token operator">=</span><span class="token string">"20"</span>
+            prism<span class="token punctuation">:</span>RegionManager<span class="token punctuation">.</span>RegionName<span class="token operator">=</span><span class="token string">"OperandRegion"</span><span class="token operator">/</span><span class="token operator">></span>
+        <span class="token operator">&lt;</span>ContentControl Grid<span class="token punctuation">.</span>Column<span class="token operator">=</span><span class="token string">"1"</span> Margin<span class="token operator">=</span><span class="token string">"20"</span>
+            prism<span class="token punctuation">:</span>RegionManager<span class="token punctuation">.</span>RegionName<span class="token operator">=</span><span class="token string">"AnswerRegion"</span><span class="token operator">/</span><span class="token operator">></span>
+				<span class="token operator">&lt;</span><span class="token class-name">Button</span> Content<span class="token operator">=</span><span class="token string">"Button"</span> 
+								Grid<span class="token punctuation">.</span>Column<span class="token operator">=</span><span class="token string">"1"</span> 
+								HorizontalAlignment<span class="token operator">=</span><span class="token string">"Left"</span> 
+								Margin<span class="token operator">=</span><span class="token string">"0,39,0,0"</span> 
+								VerticalAlignment<span class="token operator">=</span><span class="token string">"Top"</span><span class="token operator">/</span><span class="token operator">></span>
+    <span class="token operator">&lt;</span><span class="token operator">/</span>Grid<span class="token operator">></span>
+<span class="token operator">&lt;</span><span class="token operator">/</span>Window<span class="token operator">></span></code></pre><p id="8356e68b-1c6a-4db3-9383-6806aac3a339" class="">で登場する</p><ul id="570dfdb2-a974-40a5-a180-898f696021ce" class="bulleted-list"><li>Window</li></ul><ul id="bead3297-6eb0-4a29-b167-f349bbf53378" class="bulleted-list"><li>Grid</li></ul><ul id="45a9b95e-44dd-4895-ac7a-04bc5df1e3d4" class="bulleted-list"><li>ContentControl</li></ul><ul id="2a286006-521b-489d-9ab7-bb886368fa9c" class="bulleted-list"><li>Button</li></ul><p id="ca14a25a-f166-4c0e-b776-432f211a6773" class="">というタグ、クラス（それぞれ、System.Windows.Controlsに所属）でどのようなプロパティを持っているかを見てみると、</p><ul id="d51a9641-d36a-4d21-873a-2ec9bb599bd6" class="bulleted-list"><li>Window Class 　ある</li></ul><figure id="52af8566-3066-4dc8-b16d-85451bbc9536"><a href="https://docs.microsoft.com/en-us/dotnet/api/system.windows.window?f1url=%3FappId%3DDev16IDEF1%26l%3DEN-US%26k%3Dk(System.Windows.Window);k(VS.XamlEditor)%26rd%3Dtrue&amp;view=net-5.0" class="bookmark source"><div class="bookmark-info"><div class="bookmark-text"><div class="bookmark-title">Window Class (System.Windows)</div><div class="bookmark-description">Provides the ability to create, configure, show, and manage the lifetime of windows and dialog boxes.</div></div><div class="bookmark-href"><img src="https://docs.microsoft.com/favicon.ico" class="icon bookmark-icon"/>https://docs.microsoft.com/en-us/dotnet/api/system.windows.window?f1url=%3FappId%3DDev16IDEF1%26l%3DEN-US%26k%3Dk(System.Windows.Window);k(VS.XamlEditor)%26rd%3Dtrue&amp;view=net-5.0</div></div><img src="https://docs.microsoft.com/en-us/media/logos/logo-ms-social.png" class="bookmark-image"/></a></figure><p id="9ee8f334-0de8-4580-9f0a-380603e0f905" class="">
+</p><figure id="fce52168-ff6a-449a-9969-89f6bf79f559" class="image"><a href="MVVM%20+%20Prism%20fce52168ff6a449a996989f6bf79f559/Untitled.png"><img style="width:713px" src="img/Untitled.png"/></a></figure><ul id="ac0738e3-e32c-4079-8751-3b9b6f15c9de" class="bulleted-list"><li>Grid Class 　ない</li></ul><figure id="4e65eb0d-608d-4cb4-9f5f-918757eb5a51"><a href="https://docs.microsoft.com/en-us/dotnet/api/system.windows.controls.grid?f1url=%3FappId%3DDev16IDEF1%26l%3DEN-US%26k%3Dk(System.Windows.Controls.Grid);k(VS.XamlEditor)%26rd%3Dtrue&amp;view=net-5.0" class="bookmark source"><div class="bookmark-info"><div class="bookmark-text"><div class="bookmark-title">Grid Class (System.Windows.Controls)</div><div class="bookmark-description">Defines a flexible grid area that consists of columns and rows. public ref class Grid : System::Windows::Controls::Panel, System::Windows::Markup::IAddChild public class Grid : System.Windows.Controls.Panel, System.Windows.Markup.IAddChild type Grid = class inherit Panel interface IAddChild Public Class Grid Inherits Panel Implements IAddChild Inheritance Implements The following example demonstrates how to create a grid.</div></div><div class="bookmark-href"><img src="https://docs.microsoft.com/favicon.ico" class="icon bookmark-icon"/>https://docs.microsoft.com/en-us/dotnet/api/system.windows.controls.grid?f1url=%3FappId%3DDev16IDEF1%26l%3DEN-US%26k%3Dk(System.Windows.Controls.Grid);k(VS.XamlEditor)%26rd%3Dtrue&amp;view=net-5.0</div></div><img src="https://docs.microsoft.com/en-us/media/logos/logo-ms-social.png" class="bookmark-image"/></a></figure><p id="01d1d54b-1ff3-423e-8bcc-334339665e1e" class="">
+</p><figure id="180ecaa0-605a-4c64-81ba-9627f82d8826" class="image"><a href="MVVM%20+%20Prism%20fce52168ff6a449a996989f6bf79f559/Untitled%201.png"><img style="width:963px" src="img/Untitled%201.png"/></a></figure><ul id="25e4bd94-dac3-4e6a-95d4-f5efc66a171e" class="bulleted-list"><li>ContentControl Class　ある </li></ul><figure id="34af283c-f78d-4bc9-9f9e-0729fafc7f84"><a href="https://docs.microsoft.com/en-us/dotnet/api/system.windows.controls.contentcontrol?f1url=%3FappId%3DDev16IDEF1%26l%3DEN-US%26k%3Dk(System.Windows.Controls.ContentControl);k(VS.XamlEditor)%26rd%3Dtrue&amp;view=net-5.0" class="bookmark source"><div class="bookmark-info"><div class="bookmark-text"><div class="bookmark-title">ContentControl Class (System.Windows.Controls)</div><div class="bookmark-description">Represents a control with a single piece of content of any type. public ref class ContentControl : System::Windows::Controls::Control, System::Windows::Markup::IAddChild [System.Windows.Localizability(System.Windows.LocalizationCategory.None, Readability=System.Windows.Readability.Unreadable)] [System.Windows.Markup.ContentProperty(&quot;Content&quot;)] public class ContentControl : System.Windows.Controls.Control, System.Windows.Markup.IAddChild [ ] [ ] type ContentControl = class inherit Control interface IAddChild Public Class ContentControl Inherits Control Implements IAddChild Inheritance Derived Attributes Implements The following example demonstrates how to create the four buttons shown in the Remarks section.</div></div><div class="bookmark-href"><img src="https://docs.microsoft.com/favicon.ico" class="icon bookmark-icon"/>https://docs.microsoft.com/en-us/dotnet/api/system.windows.controls.contentcontrol?f1url=%3FappId%3DDev16IDEF1%26l%3DEN-US%26k%3Dk(System.Windows.Controls.ContentControl);k(VS.XamlEditor)%26rd%3Dtrue&amp;view=net-5.0</div></div><img src="https://docs.microsoft.com/en-us/media/logos/logo-ms-social.png" class="bookmark-image"/></a></figure><p id="90eb2416-3603-4d9d-beca-663af1d19591" class="">
+</p><figure id="758f2f37-bd85-4bb7-baca-7bf8d01c2106" class="image"><a href="MVVM%20+%20Prism%20fce52168ff6a449a996989f6bf79f559/Untitled%202.png"><img style="width:973px" src="img/Untitled%202.png"/></a></figure><ul id="e2af44ad-e86a-4618-ae39-eb271d829a84" class="bulleted-list"><li>Button Class　ある</li></ul><figure id="bcf495c6-5ee1-4880-8462-f379a7220dab"><a href="https://docs.microsoft.com/en-us/dotnet/api/system.windows.controls.button?f1url=%3FappId%3DDev16IDEF1%26l%3DEN-US%26k%3Dk(System.Windows.Controls.Button);k(VS.XamlEditor)%26rd%3Dtrue&amp;view=net-5.0" class="bookmark source"><div class="bookmark-info"><div class="bookmark-text"><div class="bookmark-title">Button Class (System.Windows.Controls)</div><div class="bookmark-description">Represents a Windows button control, which reacts to the Click event. public ref class Button : System::Windows::Controls::Primitives::ButtonBase public class Button : System.Windows.Controls.Primitives.ButtonBase type Button = class inherit ButtonBase Public Class Button Inherits ButtonBase Inheritance The following example shows three buttons that respond to clicks in three different ways.</div></div><div class="bookmark-href"><img src="https://docs.microsoft.com/favicon.ico" class="icon bookmark-icon"/>https://docs.microsoft.com/en-us/dotnet/api/system.windows.controls.button?f1url=%3FappId%3DDev16IDEF1%26l%3DEN-US%26k%3Dk(System.Windows.Controls.Button);k(VS.XamlEditor)%26rd%3Dtrue&amp;view=net-5.0</div></div><img src="https://docs.microsoft.com/en-us/media/logos/logo-ms-social.png" class="bookmark-image"/></a></figure><figure id="7e135d1f-3393-4cb0-b4cf-f6de66d6e1fe" class="image"><a href="MVVM%20+%20Prism%20fce52168ff6a449a996989f6bf79f559/Untitled%203.png"><img style="width:988px" src="img/Untitled%203.png"/></a></figure><p id="7f67dffe-92c9-4cfb-8695-977a62ecc5ca" class="">という感じで、Grid Class 以外はcontent プロパティを含まないことが分かった。</p><p id="fbb182ee-3c75-42f1-9ea6-e599f7fee2b6" class="">何でもはいるプロパティだけど、入れれる個数は1つだけ、という存在なのでwindow クラスのcontentにはGrid クラスを入れてあげて、gridクラスはcontentクラスを持たないからそのコンテンツは制限なしに放り込むことができるため、ContentControl やButton、はてまた登場しなかったけどImageやTextBoxなどもいっしょくたにできるのである。</p><p id="19a6f1cd-5a84-4b7c-85a6-6b811fe0f52d" class="">しらんわこんなん。</p><p id="35420f59-96ef-41d0-a274-c9ad60e40403" class="">
+</p></div></article></body></html>
