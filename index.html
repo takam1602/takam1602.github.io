@@ -8,18 +8,19 @@
 
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.css">
         <link rel="stylesheet" href="css/style.css">
+        <script src="//code.jquery.com/jquery-2.2.4.min.js"></script>
+        <script>
+            //共通パーツ読み込み
+            $(function() {
+                $("#header").load("header.html");
+                $("#footer").load("footer.html");
+            });
+        </script>
     </head>
     <body>
         <div class="wrapper">
-            <header>
-                <a href="pages/portfolio.html" class="normalBtn">portfolio</a>
-                <a href="pages/programming.html" class="normalBtn">programming</a>
-                <a href="pages/robotics.html" class="normalBtn">ag robotics</a>
-                <a href="pages/machinary.html" class="normalBtn">ag machinary</a>
-                <a href="pages/etc.html" class="normalBtn">setting</a>
-                <a href="https://twitter.com/huagdkmt" class="normalBtn">Twitter</a>
-                <a href="https://github.com/takam1602" class="normalBtn">GitHub</a>
-            </header>
+            <div id = "header">
+            </div>
 
             <div class="container">
                 <div class="main">
@@ -43,22 +44,15 @@
 
                         <li><a href="pages/etc.html">-- setting --</a></li>
                         他に思いついたことを書きます。
-                        
+
                         <li><a href="pages/kokusai.html">-- スキー --</a></li>
                     </ul>
                 </div>
             </div>
 
-            <footer>
-                <a href="pages/portfolio.html" class="normalBtn">portfolio</a>
-                <a href="pages/programming.html" class="normalBtn">programming</a>
-                <a href="pages/robotics.html" class="normalBtn">ag robotics</a>
-                <a href="pages/machinary.html" class="normalBtn">ag machinary</a>
-                <a href="pages/etc.html" class="normalBtn">setting</a>
-                <a href="https://twitter.com/huagdkmt" class="normalBtn">Twitter</a>
-                <a href="https://github.com/takam1602" class="normalBtn">GitHub</a>
-            </footer>
-            
+            <div id="footer">
+            </div>
+                        
             <corp>
             Createrd by takam1602 2021-2021
             </corp>
